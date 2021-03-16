@@ -6,8 +6,8 @@
     align-items: center;
 }
 .grid {
-    width: 500px;
-    height: 500px;
+    /* width: 500px;
+    height: 500px; */
     display: flex;
     flex-wrap: wrap;
 }
@@ -18,12 +18,14 @@
 }
 
 .panel {
+    border:5px solid #FFC300;
     padding: 50px;
     display: flex;
     flex-direction: column;
     /* align-items: center; */
     text-align: center;
     align-content: space-between;
+    background-color: white;
 }
 
 .grid-container {
@@ -33,6 +35,8 @@
 .background-support {
     background-image: url('./img/bg.jpg');
     background-size: cover;
+    border:5px solid #FFC300;
+    border-radius: 10px;
 }
 html {
     margin: 0px;
@@ -46,6 +50,8 @@ body {
     /* align-self: center; */
     /* align-content: center; */
     justify-content: center;
+    background-image: url('./img/general-bg.png');
+    background-size: cover;
 }
 
 .start-button button{
@@ -56,8 +62,8 @@ body {
 }
 
 .grid div {
-    height: 5%;
-    width: 5%;
+    /* height: 5%;
+    width: 5%; */
     /* background-color: red; */
 }
 

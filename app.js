@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.grid')
-    let squares = Array.from(document.querySelectorAll('.grid div'))
+    let squares
     const scoreDisplay = document.querySelector('#score')
     const startBtn = document.querySelector('#start-button')
-    const width = 20;
+    // const width = 20;
+    const width = parseInt(prompt('ESCOLHA O TAMANHO DO SEU GRID: \nPADRÃO:20', "20"))
     let nextRandom = 0
     let timerId
     let score = 0
@@ -17,6 +18,33 @@ document.addEventListener('DOMContentLoaded', () => {
         'red',
     ]
 
+    let game_over = false
+
+    const size = 500
+    const gridToStyle = document.querySelector('.grid')
+    gridToStyle.style.width = `${size}px`
+    gridToStyle.style.height = `${size}px`
+
+    let cont1 = 0
+    let cont2 = 0
+    while (cont1 < width * width) {
+        emptyDiv = document.createElement('div')
+        grid.appendChild(emptyDiv)
+        cont1++
+    }
+
+    while (cont2 < width) {
+        emptyDiv = document.createElement('div')
+        emptyDiv.classList.add('taken')
+        grid.appendChild(emptyDiv)
+        cont2++
+    }
+
+    squares = Array.from(document.querySelectorAll('.grid div'))
+    squares.forEach(square => {
+        square.style.width = `${size / width}px`
+        square.style.height = `${size / width}px`
+    })
     // Tetrominos
     const lTetromino = [
         [1, width + 1, width * 2 + 1, 2],
@@ -62,15 +90,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const zInvertedTetromino = [
         [1, width, width + 1, width * 2],
-        [width + 1, width*2 + 2, width, width * 2 + 1],
+        [width + 1, width * 2 + 2, width, width * 2 + 1],
         [1, width, width + 1, width * 2],
-        [width + 1, width*2 + 2, width, width * 2 + 1]
+        [width + 1, width * 2 + 2, width, width * 2 + 1]
     ]
 
     const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino, lInvertedTetromino, zInvertedTetromino]
 
 
-    let currentPosition = Math.floor(width/2);
+    let currentPosition = Math.floor(width / 2);
     let currentRotation = 0;
     let random = Math.floor(Math.random() * theTetrominoes.length)
     let current = theTetrominoes[random][currentRotation]
@@ -115,11 +143,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keyup', control)
 
     function moveDown() {
-        undraw()
-        currentPosition += width
-        draw()
-        freeze()
-        addScore()
+        if (!game_over) {
+            undraw()
+            currentPosition += width
+            draw()
+            freeze()
+            addScore()
+        }
     }
 
 
@@ -130,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
             random = nextRandom
             nextRandom = Math.floor(Math.random() * theTetrominoes.length)
             current = theTetrominoes[random][currentRotation]
-            currentPosition = Math.floor(width/2)
+            currentPosition = Math.floor(width / 2)
             draw()
             displayShape()
             gameOver()
@@ -209,22 +239,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Botão de start
     startBtn.addEventListener('click', () => {
-        if (timerId) {
-            clearInterval(timerId)
-            timerId = null
+        if (!game_over) {
+            if (timerId) {
+                clearInterval(timerId)
+                timerId = null
+            } else {
+                draw()
+                timerId = setInterval(moveDown, timeInterval)
+                nextRandom = Math.floor(Math.random() * theTetrominoes.length)
+                displayShape()
+            }
         } else {
-            draw()
-            timerId = setInterval(moveDown, timeInterval)
-            nextRandom = Math.floor(Math.random() * theTetrominoes.length)
-            displayShape()
+            game_over = false
         }
     })
 
     // pontuação
     function addScore() {
-        for (let i = 0; i < (squares.length - 21); i += width) {
-            const row = [i, i + 1, i + 2, i + 3, i + 4, i + 5, i + 6, i + 7, i + 8, i + 9, i + 10, i + 11, i + 12, i + 13, i + 14, i + 15, i + 16, i + 17, i + 18, i + 19]
-
+        for (let i = 0; i < (squares.length - width - 1); i += width) {
+            const row = []
+            contBlock = 0
+            while (contBlock < width) {
+                row.push(i + contBlock)
+                contBlock++
+            }
             if (row.every(index => squares[index].classList.contains('taken'))) {
                 score += 10
                 scoreDisplay.innerHTML = score
@@ -245,6 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
             scoreDisplay.innerHTML = `Fim de jogo, sua pontuação foi ${score}`
             clearInterval(timerId)
+            game_over = true
         }
     }
 })
