@@ -1,5 +1,5 @@
 # TetrisJS: Uma tentativa de mudar alguns padrões.
-
+![Prancheta2](https://user-images.githubusercontent.com/38598808/116462732-2eb63b00-a840-11eb-895d-9bad324f7dc7.png)
 # Equipe
 * Arlindo Maximiano
 * Bruno Martins
